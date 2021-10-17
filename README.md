@@ -1,7 +1,7 @@
 # evcodeshift
- 
+
 evcodeshift is a toolkit for running codemods over multiple JavaScript or
-TypeScript files. It is based largely off the excellent jscodeshift tool 
+TypeScript files. It is based largely off the excellent jscodeshift tool
 published by Facebook.
 
 It provides:
@@ -52,6 +52,8 @@ All options are also passed to the transformer, which means you can supply custo
   -h, --help                    print this help and exit
       --ignore-config=FILE ...  ignore files if they match patterns sourced from a configuration file (e.g. a .gitignore)
       --ignore-pattern=GLOB ...  ignore files that match a provided glob expression
+      --(no-)gitignore          adds entries the current directory's .gitignore file
+                                (default: false)
       --parser=babel|babylon|flow|ts|tsx  the parser to use for parsing the source files
                                           (default: babel)
       --parser-config=FILE      path to a JSON file containing a custom parser configuration for flow or babylon
@@ -75,33 +77,16 @@ This passes the source of all passed through the transform module specified
 with `-t` or `--transform` (defaults to `transform.js` in the current
 directory). The next section explains the structure of the transform module.
 
-## Usage (JS)
 
-```js
-const {run: jscodeshift} = require('jscodeshift/src/Runner')
+## Avoiding unwanted transforms
 
-const transformPath = 'transform.js'
-const paths = ['foo.js', 'bar']
-const options = {
-  dry: true,
-  print: true,
-  verbose: 1,
-  // ...
-}
+The largest PITA of using evcodeshift is evcodeshift trying to transform stuff in node_modules directories in the project's root or other places.
 
-const res = await jscodeshift(transformPath, paths, options)
-console.log(res)
-/*
-{
-  stats: {},
-  timeElapsed: '0.001',
-  error: 0,
-  ok: 0,
-  nochange: 0,
-  skip: 0
-}
-*/
-```
+The quickest way to to prevent evcodeshift from transforming anything in your node_modules directory is pass evcodeshift the `--gitignore` flag. Make sure the content of  [standard node.js .gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore) is added to your project's root directory .gitignore.
+
+Any standard .gitignore-ish glob pattern found in .gitignore will be ignored when the `--gitignore` flag is passed.
+
+Anything that shouldn't traditionally be found in a .gitignore file file would be a better candidate for the `ignore-config` and `ignore-pattern` flags.
 
 ## Transform module
 
@@ -198,6 +183,34 @@ detailed information by setting the `-v` option to `1` or `2`.
 
 You can collect even more stats via the `stats` function as explained above.
 
+## Programmatically using evcodeshift (JS)
+
+```js
+const {run: evcodeshift} = require('evcodeshift/src/Runner')
+
+const transformPath = 'transform.js'
+const paths = ['foo.js', 'bar']
+const options = {
+  dry: true,
+  print: true,
+  verbose: 1,
+  // ...
+}
+
+const res = await evcodeshift(transformPath, paths, options)
+console.log(res)
+/*
+{
+  stats: {},
+  timeElapsed: '0.001',
+  error: 0,
+  ok: 0,
+  nochange: 0,
+  skip: 0
+}
+*/
+```
+
 ### Parser
 
 The transform can let evcodeshift know with which parser to parse the source
@@ -218,7 +231,6 @@ module.exports.parser = {
   },
 };
 ```
-
 ### Example output
 
 ```text
