@@ -18,7 +18,7 @@ describe('Worker API', () => {
   let worker;
 
   beforeEach(() => {
-    jest.resetModuleRegistry();
+    jest.resetModules();
     worker = require('../Worker');
   });
 
