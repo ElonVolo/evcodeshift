@@ -45,6 +45,10 @@ if (module.parent) {
   setup(process.argv[2], process.argv[3]);
 }
 
+modules.exports = function(isRunAsExecutable) {
+  var module = {}
+}
+
 function prepareJscodeshift(options) {
   const parser = parserFromTransform ||
     getParser(options.parser, options.parserConfig);

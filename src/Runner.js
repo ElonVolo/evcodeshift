@@ -16,6 +16,9 @@ const http = require('http');
 const https = require('https');
 const temp = require('temp');
 const ignores = require('./ignoreFiles');
+//const transformWorker = require('./TransformWorker')
+
+import TransformWorker from './TransformWorker'
 
 const availableCpus = Math.max(require('os').cpus().length - 1, 1);
 const CHUNK_SIZE = 50;
@@ -256,6 +259,23 @@ function run(transformFile, paths, options) {
 
         const workers = [];
         for (let i = 0; i < processes; i++) {
+          if (options.runInBand) {
+            // If we're not running transformation workers as forked-off executables
+            // (i.e. part of the same process as what launched jscodeshift) then
+            // we do a standard require/import of the worker and just call it from code,
+            // returning the TransformWorker's EventEmitter
+            let isStandaloneExecutable = false;
+            let newWorker = new TransformWorker(isStandaloneExecutable);
+            workers.push(newWorker.emitter);
+          } else {
+            // Else, go ahead and call the Worker.js code as a standalone executable
+            // that's added to our list of forked proceesses
+            let isStandaloneExecutable = true;
+            let newWorker = new TransformWorker(isStandaloneExecutable);
+            let child_proc = child_process.fork(require.resolve('./Worker'), args);
+            workers.push(child_proc);
+          }
+
           workers.push(options.runInBand ?
             require('./Worker')(args) :
             child_process.fork(require.resolve('./Worker'), args)
@@ -298,7 +318,7 @@ function run(transformFile, paths, options) {
             process.stdout.write(
               'Time elapsed: ' + timeElapsed + 'seconds \n'
             );
-            
+
             if (options.failOnError && fileCounters.error > 0) {
               process.exit(1);
             }

@@ -8,6 +8,9 @@
 
 'use strict';
 
+import '../TransformWorker';
+import { TransformWorker } from '../TransformWorker';
+
 const testUtils = require('../../utils/testUtils');
 
 const createTransformWith = testUtils.createTransformWith;
@@ -19,17 +22,21 @@ describe('Worker API', () => {
 
   beforeEach(() => {
     jest.resetModules();
-    worker = require('../Worker');
   });
 
   it('transforms files', done => {
     const transformPath =
       createTransformWith('return fileInfo.source + " changed";');
     const sourcePath = createTempFileWith('foo');
-    const emitter = worker([transformPath]);
 
-    emitter.send({files: [sourcePath]});
-    emitter.once('message', (data) => {
+    const shouldRunAsStandloneExecutable = false;
+    const transformWorker = new TransformWorker(
+      shouldRunAsStandloneExecutable,
+      [transformPath]
+    );
+
+    transformWorker.emitter.send({files: [sourcePath]});
+    transformWorker.emitter.once('message', (data) => {
       expect(data.status).toBe('ok');
       expect(data.msg).toBe(sourcePath);
       expect(getFileContent(sourcePath)).toBe('foo changed');
@@ -45,9 +52,14 @@ describe('Worker API', () => {
     );
     const sourcePath = createTempFileWith('const x = 10;');
 
-    const emitter = worker([transformPath]);
-    emitter.send({files: [sourcePath]});
-    emitter.once('message', (data) => {
+    const shouldRunAsStandloneExecutable = false;
+    const transformWorker = new TransformWorker(
+      shouldRunAsStandloneExecutable,
+      [transformPath]
+    );
+
+    transformWorker.emitter.send({files: [sourcePath]});
+    transformWorker.emitter.once('message', (data) => {
       expect(data.status).toBe('ok');
       expect(getFileContent(sourcePath)).toBe(
         'const x = 10;' + ' changed'
@@ -80,10 +92,15 @@ describe('Worker API', () => {
         'api.jscodeshift(fileInfo.source); return "changed";'
       );
       const sourcePath = getSourceFile();
-      const emitter = worker([transformPath]);
 
-      emitter.send({files: [sourcePath]});
-      emitter.once('message', (data) => {
+      const shouldRunAsStandloneExecutable = false;
+      const transformWorker = new TransformWorker(
+        shouldRunAsStandloneExecutable,
+        [transformPath]
+      );
+
+      transformWorker.emitter.send({files: [sourcePath]});
+      transformWorker.emitter.once('message', (data) => {
         expect(data.status).toBe('error');
         expect(data.msg).toMatch('SyntaxError');
         done();
@@ -94,10 +111,15 @@ describe('Worker API', () => {
       it(`uses ${parser} if configured as such`, done => {
         const transformPath = getTransformForParser(parser);
         const sourcePath = getSourceFile();
-        const emitter = worker([transformPath]);
 
-        emitter.send({files: [sourcePath]});
-        emitter.once('message', (data) => {
+        const shouldRunAsStandloneExecutable = false;
+        const transformWorker = new TransformWorker(
+          shouldRunAsStandloneExecutable,
+          [transformPath]
+        );
+
+        trasnformWorker.emitter.send({files: [sourcePath]});
+        transformWorker.emitter.once('message', (data) => {
           expect(data.status).toBe('ok');
           expect(getFileContent(sourcePath)).toBe('changed');
           done();
@@ -111,10 +133,15 @@ describe('Worker API', () => {
         const sourcePath = createTempFileWith(
           'var component = <div>{foobar}</div>;'
         );
-        const emitter = worker([transformPath]);
 
-        emitter.send({files: [sourcePath]});
-        emitter.once('message', (data) => {
+        const shouldRunAsStandloneExecutable = false;
+        const transformWorker = new TransformWorker(
+          shouldRunAsStandloneExecutable,
+          [transformPath]
+        );
+
+        transformWorker.emitter.send({files: [sourcePath]});
+        transformWorker.emitter.once('message', (data) => {
           expect(data.status).toBe('ok');
           expect(getFileContent(sourcePath)).toBe('changed');
           done();
@@ -127,10 +154,15 @@ describe('Worker API', () => {
       const sourcePath = createTempFileWith(
         'enum E {A, B}'
       );
-      const emitter = worker([transformPath]);
 
-      emitter.send({files: [sourcePath]});
-      emitter.once('message', (data) => {
+      const shouldRunAsStandloneExecutable = false;
+      const transformWorker = new TransformWorker(
+        shouldRunAsStandloneExecutable,
+        [transformPath]
+      );
+
+      transformWorker.emitter.send({files: [sourcePath]});
+      transformWorker.emitter.once('message', (data) => {
         expect(data.status).toBe('ok');
         expect(getFileContent(sourcePath)).toBe('changed');
         done();
