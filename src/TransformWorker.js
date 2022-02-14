@@ -14,7 +14,7 @@ try {
   presetEnv = require('@babel/preset-env');
 } catch (_) {}
 
-export class TransformWorker {
+class TransformWorker {
   constructor(shouldRunAsStandloneExecutable, ...args) {
     this.emitter = null;
     this.finish = null;
@@ -200,3 +200,5 @@ export class TransformWorker {
     );
   }
 }
+
+module.exports = TransformWorker;

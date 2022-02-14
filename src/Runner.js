@@ -16,9 +16,7 @@ const http = require('http');
 const https = require('https');
 const temp = require('temp');
 const ignores = require('./ignoreFiles');
-//const transformWorker = require('./TransformWorker')
-
-import TransformWorker from './TransformWorker'
+const TransformWorker = require('./TransformWorker')
 
 const availableCpus = Math.max(require('os').cpus().length - 1, 1);
 const CHUNK_SIZE = 50;

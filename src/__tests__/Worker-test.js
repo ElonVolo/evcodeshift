@@ -8,14 +8,13 @@
 
 'use strict';
 
-import '../TransformWorker';
-import { TransformWorker } from '../TransformWorker';
-
+const TransformWorker = require('../TransformWorker.js');
 const testUtils = require('../../utils/testUtils');
 
 const createTransformWith = testUtils.createTransformWith;
 const createTempFileWith = testUtils.createTempFileWith;
 const getFileContent = testUtils.getFileContent;
+
 
 describe('Worker API', () => {
   let worker;
