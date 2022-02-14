@@ -80,6 +80,7 @@ class TransformWorker {
       });
     }
 
+    console.log(transformFile);
     const module = require(transformFile);
     transform = typeof module.default === 'function' ?
       module.default :
