@@ -27,7 +27,6 @@ class TransformWorker {
       this.emitter.send = (data) => { this.run(data); };
       this.finish = () => { this.emitter.emit('disconnect'); };
       this.notify = (data) => { this.emitter.emit('message', data); };
-      console.log(args);
       let transformFile = args[0]
       let targetFile = args[1];
       this.setup(transformFile, targetFile);
