@@ -153,7 +153,7 @@ class TransformWorker {
           source = source.toString();
           try {
             const jscodeshift = self.prepareJscodeshift(options);
-            const out = await transform(
+            const out = await self.transform(
               {
                 path: file,
                 source: source,
