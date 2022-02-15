@@ -24,14 +24,17 @@ class TransformWorker {
 
     if (!shouldRunAsStandloneExecutable) {
       this.emitter = new EventEmitter();
-      this.emitter.send = (data) => { run(data); };
-      this.finish = () => { emitter.emit('disconnect'); };
-      this.notify = (data) => { emitter.emit('message', data); };
-      this.setup(args[0], args[1]);
+      this.emitter.send = (data) => { this.run(data); };
+      this.finish = () => { this.emitter.emit('disconnect'); };
+      this.notify = (data) => { this.emitter.emit('message', data); };
+      console.log(args);
+      let transformFile = args[0]
+      let targetFile = args[1];
+      this.setup(transformFile, targetFile);
     } else {
       this.finish = () => setImmediate(() => process.disconnect());
       this.notify = (data) => { process.send(data); };
-      this.process.on('message', (data) => { run(data); });
+      this.process.on('message', (data) => { this.run(data); });
       this.setup(process.argv[2], process.argv[3]);
     }
   }
@@ -80,13 +83,13 @@ class TransformWorker {
       });
     }
 
-    console.log(transformFile);
     const module = require(transformFile);
-    transform = typeof module.default === 'function' ?
+    this.transform = typeof module.default === 'function' ?
       module.default :
       module;
+
     if (module.parser) {
-      parserFromTransform = typeof module.parser === 'string' ?
+      this.parserFromTransform = typeof module.parser === 'string' ?
         getParser(module.parser) :
         module.parser;
     }
@@ -136,18 +139,20 @@ class TransformWorker {
       return;
     }
 
+    let self = this;
+
     async.each(
       files,
       function(file, callback) {
         fs.readFile(file, async function(err, source) {
           if (err) {
-            this.updateStatus('error', file, 'File error: ' + err);
+            self.updateStatus('error', file, 'File error: ' + err);
             callback();
             return;
           }
           source = source.toString();
           try {
-            const jscodeshift = prepareJscodeshift(options);
+            const jscodeshift = self.prepareJscodeshift(options);
             const out = await transform(
               {
                 path: file,
@@ -156,13 +161,13 @@ class TransformWorker {
               {
                 j: jscodeshift,
                 jscodeshift: jscodeshift,
-                stats: options.dry ? stats : empty,
-                report: msg => report(file, msg),
+                stats: options.dry ? self.stats : self.empty,
+                report: msg => self.report(file, msg),
               },
               options
             );
             if (!out || out === source) {
-              this.updateStatus(out ? 'nochange' : 'skip', file);
+              self.updateStatus(out ? 'nochange' : 'skip', file);
               callback();
               return;
             }
@@ -172,21 +177,21 @@ class TransformWorker {
             if (!options.dry) {
               writeFileAtomic(file, out, function(err) {
                 if (err) {
-                  this.updateStatus('error', file, 'File writer error: ' + err);
+                  self.updateStatus('error', file, 'File writer error: ' + err);
                 } else {
-                  this.updateStatus('ok', file);
+                  self.updateStatus('ok', file);
                 }
                 callback();
               });
             } else {
-              this.updateStatus('ok', file);
+              self.updateStatus('ok', file);
               callback();
             }
           } catch(err) {
-            this.updateStatus(
+            self.updateStatus(
               'error',
               file,
-              'Transformation error ('+ err.message.replace(/\n/g, ' ') + ')\n' + trimStackTrace(err.stack)
+              'Transformation error ('+ err.message.replace(/\n/g, ' ') + ')\n' + self.trimStackTrace(err.stack)
             );
             callback();
           }
@@ -194,9 +199,9 @@ class TransformWorker {
       },
       function(err) {
         if (err) {
-          this.updateStatus('error', '', 'This should never be shown!');
+          self.updateStatus('error', '', 'This should never be shown!');
         }
-        free();
+        self.free();
       }
     );
   }

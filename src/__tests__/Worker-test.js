@@ -27,13 +27,10 @@ describe('Worker API', () => {
     const transformPath =
       createTransformWith('return fileInfo.source + " changed";');
     const sourcePath = createTempFileWith('foo');
-
-    console.log(transformPath);
-
     const shouldRunAsStandloneExecutable = false;
     const transformWorker = new TransformWorker(
       shouldRunAsStandloneExecutable,
-      [transformPath]
+      transformPath
     );
 
     transformWorker.emitter.send({files: [sourcePath]});
