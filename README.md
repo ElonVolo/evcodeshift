@@ -333,18 +333,18 @@ node types and are not callable on differently typed collections.
 ```js
 // Adding a method to all Identifiers
 evcodeshift.registerMethods({
-	logNames: function() {
-		return this.forEach(function(path) {
-			console.log(path.node.name);
-		});
-	}
+  logNames: function() {
+    return this.forEach(function(path) {
+      console.log(path.node.name);
+    });
+  }
 }, evcodeshift.Identifier);
 
 // Adding a method to all collections
 evcodeshift.registerMethods({
-	findIdentifiers: function() {
-		return this.find(evcodeshift.Identifier);
-	}
+  findIdentifiers: function() {
+    return this.find(evcodeshift.Identifier);
+  }
 });
 
 evcodeshift(ast).findIdentifiers().logNames();
