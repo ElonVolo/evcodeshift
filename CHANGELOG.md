@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## evcodeshift [2.2.0] 2022-02-19
+
+### Added
+
+- Added `--gitignore` flag that's a shotcut for using a project's .gitignore for ignores
+
+### Changed
+
+- Reworked jscodeshift.js executable to rely on items in the help section being in alphabetical order.
 ## [0.13.1] 2022-01-10
 
 ### Changed
