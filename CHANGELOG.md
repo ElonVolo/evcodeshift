@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## evcodeshift [2.2.1] 2022-03-09
 
+### Added
+
+- A `saveoutput` parameter to the defineTest() function that allows the results of the transformations to be be saved to a file so they can be more easily be inspected by a text editor or other tools.
+
 ### Changed
 
 - Switched from `recast` to `@putout/recast` as the @coderaiser's fork seems to be more recently maintained than the `recast` upstream, and also because `@output/recast` fixed a bug introdcued by `recast@0.21.0` where transformations that specificied single quotes where still outputting with double quotes.
