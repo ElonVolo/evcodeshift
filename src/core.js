@@ -12,7 +12,7 @@ const Collection = require('./Collection');
 const collections = require('./collections');
 const getParser = require('./getParser');
 const matchNode = require('./matchNode');
-const recast = require('recast');
+const recast = require('@putout/recast');
 const template = require('./template');
 
 const Node = recast.types.namedTypes.Node;

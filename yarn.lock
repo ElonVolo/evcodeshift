@@ -992,6 +992,16 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@putout/recast@^1.1.0":
+  "integrity" "sha512-YuXgOJhhzAqpFFfZK913q8WBxGHSRG69y9qPZt2a4Mf8grvDZlnCwy0e0aIFZTxlWOaF83a1lYniF6redql/PA=="
+  "resolved" "https://registry.npmjs.org/@putout/recast/-/recast-1.5.1.tgz"
+  "version" "1.5.1"
+  dependencies:
+    "ast-types" "0.15.2"
+    "esprima" "~4.0.0"
+    "source-map" "~0.6.1"
+    "tslib" "^2.0.1"
+
 "@types/linkify-it@*":
   "integrity" "sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA=="
   "resolved" "https://registry.npmjs.org/@types/linkify-it/-/linkify-it-3.0.2.tgz"
@@ -1072,7 +1082,14 @@
   "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-2.2.1.tgz"
   "version" "2.2.1"
 
-"ansi-styles@^3.2.0", "ansi-styles@^3.2.1":
+"ansi-styles@^3.2.0":
+  "integrity" "sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA=="
+  "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz"
+  "version" "3.2.1"
+  dependencies:
+    "color-convert" "^1.9.0"
+
+"ansi-styles@^3.2.1":
   "integrity" "sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA=="
   "resolved" "https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz"
   "version" "3.2.1"
@@ -4191,15 +4208,6 @@
     "load-json-file" "^2.0.0"
     "normalize-package-data" "^2.3.2"
     "path-type" "^2.0.0"
-
-"recast@github:ElonVolo/recast":
-  "resolved" "git+ssh://git@github.com/ElonVolo/recast.git#c76017b847decf439acfacfadf1d15955979a18f"
-  "version" "0.21.0"
-  dependencies:
-    "ast-types" "0.15.2"
-    "esprima" "~4.0.0"
-    "source-map" "~0.6.1"
-    "tslib" "^2.0.1"
 
 "regenerate-unicode-properties@^9.0.0":
   "integrity" "sha512-3E12UeNSPfjrgwjkR81m5J7Aw/T55Tu7nUyZVQYCKEOs+2dkxEY+DpPtZzO4YruuiPb7NkYLVcyJC4+zCbk5pA=="
