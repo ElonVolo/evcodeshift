@@ -10,7 +10,7 @@
 
 const assert = require('assert');
 const intersection = require('./utils/intersection');
-const recast = require('recast');
+const recast = require('@putout/recast');
 const union = require('./utils/union');
 
 const astTypes = recast.types;

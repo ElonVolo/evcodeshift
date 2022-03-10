@@ -13,7 +13,7 @@ const NodeCollection = require('./Node');
 
 const assert = require('assert');
 const once = require('../utils/once');
-const recast = require('recast');
+const recast = require('@putout/recast');
 const requiresModule = require('./VariableDeclarator').filters.requiresModule;
 
 const types = recast.types.namedTypes;

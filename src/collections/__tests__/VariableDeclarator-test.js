@@ -10,7 +10,7 @@
 
 const getParser = require('./../../getParser');
 
-const recast = require('recast');
+const recast = require('@putout/recast');
 const types = recast.types.namedTypes;
 
 describe('VariableDeclarators', function() {

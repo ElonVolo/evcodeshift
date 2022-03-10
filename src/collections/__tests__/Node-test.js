@@ -21,7 +21,7 @@ describe('Collection API', function() {
 
     Collection = require('../../Collection');
     NodeCollection = require('../Node');
-    recast = require('recast');
+    recast = require('@putout/recast');
 
     types = recast.types.namedTypes;
     b = recast.types.builders;

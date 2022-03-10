@@ -23,7 +23,7 @@ describe('JSXCollection API', function() {
 
     Collection = require('../../Collection');
     JSXElementCollection = require('../JSXElement');
-    recast = require('recast');
+    recast = require('@putout/recast');
     types = recast.types.namedTypes;
     b = recast.types.builders;
 

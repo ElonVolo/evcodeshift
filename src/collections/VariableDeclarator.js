@@ -11,7 +11,7 @@
 const Collection = require('../Collection');
 const NodeCollection = require('./Node');
 const once = require('../utils/once');
-const recast = require('recast');
+const recast = require('@putout/recast');
 
 const astNodesAreEquivalent = recast.types.astNodesAreEquivalent;
 const b = recast.types.builders;
