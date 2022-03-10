@@ -24,6 +24,18 @@ defineTest(__dirname, 'reverse-identifiers');
 
 defineTest(__dirname, 'reverse-identifiers', null, 'typescript/reverse-identifiers', { parser: 'ts' });
 
+// defineTest(__dirname, 'reverse-identifiers', null, 'typescript/reverse-identifiers', { parser: 'ts', saveoutput: true });
+//
+// The commented out test above would run the same as the uncommented one above it, but passing in value true for saveoutput will create
+// the following directory structure in the project root
+//
+//   unit_test_output
+//     /reverse-identifiers
+//        /reverse-identifiers.input.js             # The original code given to the unit test
+//        /reverse-identifiers.output.js            # The output that the unit test is expecting to see if all goes well
+//        /reverse-identifiers.transformed.js       # The actual result of running the transformation (may different from output if unit test is failing)
+//
+
 describe('reverse-identifiers', () => {
   defineInlineTest(transform, {}, `
 var firstWord = 'Hello ';

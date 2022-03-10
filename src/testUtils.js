@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const mkdirp = require('mkdirp');
 
 function applyTransform(module, options, input, testOptions = {}) {
   // Handle ES6 modules using default export for the transform
@@ -32,7 +33,8 @@ function applyTransform(module, options, input, testOptions = {}) {
     options || {}
   );
 
-  return (output || '').trim();
+  const trimmedOutput = (output || '').trim();
+  return trimmedOutput;
 }
 exports.applyTransform = applyTransform;
 
@@ -45,6 +47,11 @@ exports.runSnapshotTest = runSnapshotTest;
 
 function runInlineTest(module, options, input, expectedOutput, testOptions) {
   const output = applyTransform(module, options, input, testOptions);
+
+  if (testOptions && testOptions.saveoutput) {
+    fs.writeFileSync(testOptions.transformedOutputPath, output, 'utf-8');
+  }
+
   expect(output).toEqual(expectedOutput.trim());
   return output;
 }
@@ -86,15 +93,37 @@ function runTest(dirName, transformName, options, testFilePrefix, testOptions = 
 
   const extension = extensionForParser(testOptions.parser)
   const fixtureDir = path.join(dirName, '..', '__testfixtures__');
-  const inputPath = path.join(fixtureDir, testFilePrefix + `.input.${extension}`);
+
+  const inputFilename = testFilePrefix + `.input.${extension}`;
+  const outputFileName = testFilePrefix + `.output.${extension}`;
+
+  const inputPath = path.join(fixtureDir, inputFilename);
+  const outputPath = path.join(fixtureDir, outputFileName );
+
   const source = fs.readFileSync(inputPath, 'utf8');
   const expectedOutput = fs.readFileSync(
-    path.join(fixtureDir, testFilePrefix + `.output.${extension}`),
+    outputPath,
     'utf8'
   );
   // Assumes transform is one level up from __tests__ directory
   const module = require(path.join(dirName, '..', transformName));
-  runInlineTest(module, options, {
+
+  if (testOptions && testOptions.saveoutput) {
+    let debugOutputSavePath = path.join(process.cwd(), 'unit_test_output', testFilePrefix);
+    mkdirp.sync(debugOutputSavePath);
+
+    let inputFileContentPath = path.join(debugOutputSavePath, inputFilename);
+    fs.writeFileSync(inputFileContentPath, source, 'utf-8');
+
+    let expectedOutputContentPath = path.join(debugOutputSavePath, outputFileName);
+    fs.writeFileSync(expectedOutputContentPath, expectedOutput, 'utf-8');
+
+    let fileExtension = extensionForParser(testOptions.parser);
+    let transformedContentPath = path.join(debugOutputSavePath, `${testFilePrefix}.tranformed.${fileExtension}`);
+    testOptions.transformedOutputPath = transformedContentPath;
+  }
+
+  const transformedContent = runInlineTest(module, options, {
     path: inputPath,
     source
   }, expectedOutput, testOptions);
