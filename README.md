@@ -95,7 +95,7 @@ It's recommended that you set up your codemod project to all debugging via the V
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceRoot}/node_modules/.bin/jscodeshift",
+            "program": "${workspaceRoot}/node_modules/.bin/evcodeshift",
             "stopOnEntry": false,
             "args": ["--dry", "--print", "-t", "${input:transformFile}", "--parser", "${input:parser}", "--run-in-band", "${file}"],
             "preLaunchTask": null,
