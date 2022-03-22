@@ -77,7 +77,7 @@ This passes the source of all passed through the transform module specified
 with `-t` or `--transform` (defaults to `transform.js` in the current
 directory).
 
-## Setting up VSCode to debug codemodds
+## Setting up VSCode to debug codemods
 
 It's recommended that you set up your codemod project to all debugging via the VSCode IDE. When you open your project in VSCode, add the following configuration to your launch.json debugging configuration.
 
