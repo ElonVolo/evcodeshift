@@ -149,7 +149,7 @@ It's recommended that you set up your codemod project to all debugging via the V
 Once this has been added to the configuration
 
 1. Install evcodeshift as a package if you haven't done so already by running the command  **npm install --save evcodeshift**. The debug configuration will not work otherwise.
-2. Once the evcodeshift local package has been installed, select in the file you with to run the transform on in VSCode file tree. If the file to transform was named "foo.js", you would click on the "foo.js" file in your project tree.
+2. Once the evcodeshift local package has been installed, go to the VSCode file tree and select the file on which you want to run the transform. For example, if you wanted to run codemod transforms of foo.js file, you would click on the entry for foo.js file in your project tree.
 3. Select "Debug Transform" from the debugging menu's options menu.
 4. Click the **"Start Debugging"** button on the VSCode debugger.
 5. You will be then prompted for the name of evcodeshift transform file. Enter in the name of the transform file to use. If no name is given it will default to **transform.js**
