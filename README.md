@@ -453,8 +453,8 @@ More on config options [here](https://github.com/benjamn/recast/blob/52a7ec3eaaa
 
 ```js
 const {run: evcodeshift} = require('evcodeshift/src/Runner')
-
-const transformPath = 'transform.js'
+const path = require('node:path');
+const transformPath = path.resolve('transform.js')
 const paths = ['foo.js', 'bar']
 const options = {
   dry: true,
