@@ -108,8 +108,6 @@ function runTest(dirName, transformName, options, testFilePrefix, testOptions = 
     outputPath,
     'utf8'
   );
-  // Assumes transform is one level up from __tests__ directory
-  const module = require(path.join(dirName, '..', transformName));
 
   if (testOptions && testOptions.saveoutput) {
     let debugOutputSavePath = path.join(process.cwd(), 'unit_test_output', testFilePrefix);
