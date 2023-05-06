@@ -92,7 +92,9 @@ function runTest(dirName, transformName, options, testFilePrefix, testOptions = 
     testFilePrefix = transformName;
   }
 
-  const extension = extensionForParser(testOptions.parser)
+  // Assumes transform is one level up from __tests__ directory
+  const module = require(path.join(dirName, '..', transformName));
+  const extension = extensionForParser(testOptions.parser || module.parser)
   const fixtureDir = path.join(dirName, '..', '__testfixtures__');
 
   const inputFilename = testFilePrefix + `.input.${extension}`;
@@ -169,7 +171,7 @@ exports.defineSnapshotTest = defineSnapshotTest;
  * Handles file-loading boilerplates, using same defaults as defineTest
  */
 function defineSnapshotTestFromFixture(dirName, module, options, testFilePrefix, testName, testOptions = {}) {
-  const extension = extensionForParser(testOptions.parser)
+  const extension = extensionForParser(testOptions.parser || module.parser)
   const fixtureDir = path.join(dirName, '..', '__testfixtures__');
   const inputPath = path.join(fixtureDir, testFilePrefix + `.input.${extension}`);
   const source = fs.readFileSync(inputPath, 'utf8');

@@ -234,8 +234,8 @@ At the end, the CLI will report those values. This can be useful while
 developing the transform, e.g. to find out how often a certain construct
 appears in the source(s).
 
-**`report`** allows you do print arbitrary strings to stdout. This can be
-useful when other tools consume the output of evcodeshift. The reason to not
+**`report`** allows you to print arbitrary strings to stdout. This can be
+useful when other tools consume the output of jscodeshift. The reason to not
 directly use `process.stdout` in transform code is to avoid mangled output when
 many files are processed.
 
@@ -281,14 +281,14 @@ __Example: specifying parser type string in the transform file__
 module.exports = function transformer(file, api, options) {
   const j = api.jscodeshift;
   const rootSource = j(file.source);
-  
+
   // whatever other code...
-  
+
   return rootSource.toSource();
 }
-  
+
 // use the flow parser
-module.exports.parser = 'flow'; 
+module.exports.parser = 'flow';
 ```
 
 __Example: specifying a custom parser object in the transform file__
@@ -298,9 +298,9 @@ __Example: specifying a custom parser object in the transform file__
 module.exports = function transformer(file, api, options) {
   const j = api.jscodeshift;
   const rootSource = j(file.source);
-  
+
   // whatever other code...
-  
+
   return rootSource.toSource();
 }
 
@@ -382,7 +382,8 @@ var ast = j.callExpression(
 ```
 
 The signature of each builder function is best learned by having a look at the
-[definition files](https://github.com/benjamn/ast-types/blob/master/def/).
+[definition files](https://github.com/benjamn/ast-types/tree/master/src/def)
+or in the babel/types [docs](https://babeljs.io/docs/en/babel-types).
 
 ### Collections and Traversal
 
