@@ -1,6 +1,6 @@
 {
   "name": "evcodeshift",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "A bleeding edge fork of jscodeshift",
   "repository": {
     "type": "git",
