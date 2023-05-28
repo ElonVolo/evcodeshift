@@ -5,9 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const path = require('path');
+
 function throwError(exitCode, message, helpText) {
   const error = new Error(
-    helpText ?  `${message}\n\n---\n\n${helpText}` : message
+    helpText ? `${message}\n\n---\n\n${helpText}` : message
   );
   error.exitCode = exitCode;
   throw error;
@@ -38,7 +40,9 @@ function formatOption(option) {
       if (option.help) {
         text += '\n';
       }
-      text += `${' '.repeat(textLength)}(default: ${option.defaultHelp || option.default})`;
+      text += `${' '.repeat(textLength)}(default: ${
+        option.defaultHelp || option.default
+      })`;
     }
   }
 
@@ -47,8 +51,8 @@ function formatOption(option) {
 
 function getHelpText(options) {
   const opts = Object.keys(options)
-    .map(k => options[k])
-    .sort((a,b) => a.display_index - b.display_index);
+    .map((k) => options[k])
+    .sort((a, b) => a.display_index - b.display_index);
 
   const text = `
 Usage: evcodeshift [OPTION]... PATH...
@@ -74,16 +78,14 @@ function validateOptions(parsedOptions, options) {
     const option = options[optionName];
     if (option.choices && !option.choices.includes(parsedOptions[optionName])) {
       errors.push(
-        `Error: --${option.full} must be one of the values ${option.choices.join(',')}`
+        `Error: --${
+          option.full
+        } must be one of the values ${option.choices.join(',')}`
       );
     }
   }
   if (errors.length > 0) {
-    throwError(
-      1,
-      errors.join('\n'),
-      getHelpText(options)
-    );
+    throwError(1, errors.join('\n'), getHelpText(options));
   }
 }
 
@@ -106,12 +108,12 @@ function prepareOptions(options) {
     }
     option.key = optionName;
 
-    preparedOptions['--'+option.full] = option;
+    preparedOptions['--' + option.full] = option;
     if (option.abbr) {
-      preparedOptions['-'+option.abbr] = option;
+      preparedOptions['-' + option.abbr] = option;
     }
     if (option.flag) {
-      preparedOptions['--no-'+option.full] = option;
+      preparedOptions['--no-' + option.full] = option;
     }
   }
 
@@ -122,7 +124,7 @@ function isOption(value) {
   return /^--?/.test(value);
 }
 
-function parse(options, args=process.argv.slice(2)) {
+function parse(options, args = process.argv.slice(2)) {
   const missingValue = Symbol();
   const preparedOptions = prepareOptions(options);
 
@@ -144,10 +146,23 @@ function parse(options, args=process.argv.slice(2)) {
       let optionName = arg;
       let value = null;
       let option = null;
+      if (optionName.includes('edit')) {
+        if (args.length < 3) {
+          throwError(1, 'Missing arguments to --edit', getHelpText(options));
+        }
+        const transformPath = path.resolve(
+          __dirname,
+          '..',
+          'bin',
+          'editPropertyValue.js'
+        );
+        parsedOptions['transform'] = transformPath;
+        continue;
+      }
       if (optionName.includes('=')) {
         const index = arg.indexOf('=');
         optionName = arg.slice(0, index);
-        value = arg.slice(index+1);
+        value = arg.slice(index + 1);
       }
       if (preparedOptions.hasOwnProperty(optionName)) {
         option = preparedOptions[optionName];
@@ -160,21 +175,33 @@ function parse(options, args=process.argv.slice(2)) {
         // - If the option has been seen before, it's converted to a list
         //   If the previous value was true (i.e. a flag), that value is
         //   discarded.
+
         const realOptionName = optionName.replace(/^--?(no-)?/, '');
-        const isList = parsedOptions.hasOwnProperty(realOptionName) &&
+
+        if (args[0].includes('edit')) {
+          parsedOptions['keyValue'] = {
+            key: realOptionName,
+            value,
+          };
+          continue;
+        }
+
+        const isList =
+          parsedOptions.hasOwnProperty(realOptionName) &&
           parsedOptions[realOptionName] !== true;
         option = {
           key: realOptionName,
           full: realOptionName,
-          flag: !parsedOptions.hasOwnProperty(realOptionName) &&
-                value === null &&
-                isOption(args[i+1]),
+          flag:
+            !parsedOptions.hasOwnProperty(realOptionName) &&
+            value === null &&
+            isOption(args[i + 1]),
           list: isList,
           process(value) {
             // Try to parse values as JSON to be compatible with nomnom
             try {
               return JSON.parse(value);
-            } catch(_e) {}
+            } catch (_e) {}
             return value;
           },
         };
@@ -182,9 +209,8 @@ function parse(options, args=process.argv.slice(2)) {
         if (isList) {
           const currentValue = parsedOptions[realOptionName];
           if (!Array.isArray(currentValue)) {
-            parsedOptions[realOptionName] = currentValue === true ?
-              [] :
-              [currentValue];
+            parsedOptions[realOptionName] =
+              currentValue === true ? [] : [currentValue];
           }
         }
       }
@@ -201,9 +227,9 @@ function parse(options, args=process.argv.slice(2)) {
         }
         parsedOptions[option.key] = value;
       } else {
-        if (value === null && i <  args.length - 1 && !isOption(args[i+1])) {
+        if (value === null && i < args.length - 1 && !isOption(args[i + 1])) {
           // consume next value
-          value = args[i+1];
+          value = args[i + 1];
           i += 1;
         }
         if (value !== null) {

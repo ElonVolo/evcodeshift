@@ -394,6 +394,77 @@ describe('jscodeshift CLI', () => {
     });
   });
 
+  describe('--edit', () => {
+    it('replaces value of identified property with provided literal', () => {
+      const source = createTempFileWith(
+        `let myconfigData = {
+        propertyA: 'oldValue',
+        propertyB: 'valueB',
+      };
+      `,
+        undefined,
+        '.js'
+      );
+
+      return run(['--edit', source, `--propertyA=${JSON.stringify('newValue')}`]).then((out) => {
+        expect(out[1]).toBe('');
+        expect(readFile(source)).toBe(`let myconfigData = {
+        propertyA: "newValue",
+        propertyB: 'valueB',
+      };
+      `);
+      });
+    });
+
+    it('replaces value of identified property with provided array', () => {
+      const source = createTempFileWith(
+        `let myconfigData = {
+        environments: {
+          ios: {
+            provisioning_profiles: ['111111', '22222', '333333'],
+          },
+        },
+      };
+      `,
+        undefined,
+        '.js'
+      );
+
+      return run([
+        '--edit',
+        source,
+        `--provisioning_profiles=${JSON.stringify(["4444444", "2323232", "5656565"])}`,
+      ]).then((out) => {
+        expect(out[1]).toBe('');
+        expect(readFile(source)).toBe(`let myconfigData = {
+        environments: {
+          ios: {
+            provisioning_profiles: ["4444444", "2323232", "5656565"],
+          },
+        },
+      };
+      `);
+      });
+    });
+
+    it('replaces value of identified property with provided object', () => {
+      const source = createTempFileWith(`let myconfigData = {
+        someProperty: 'hello'
+      };`, undefined, '.js');
+
+      return run(['--edit', source, `--someProperty=${JSON.stringify({ anotherProperty: "world" })}`]).then(
+        out => {
+          expect(out[1]).toBe('');
+          expect(readFile(source)).toBe(`let myconfigData = {
+        someProperty: {
+          anotherProperty: "world"
+        }
+      };`)
+        }
+      )
+    });
+  });
+
   describe('--parser=ts', () => {
     it('parses TypeScript sources', () => {
       const source = createTempFileWith('type Foo = string | string[];');
